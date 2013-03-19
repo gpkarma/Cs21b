@@ -1,0 +1,52 @@
+; marry.scm procedure cuts - long versions, etc.
+
+(define (i-like-more? person1 person2)
+        (define counter 0)
+        (define person1-rank 0)
+        (define person2-rank 0)
+        (let ((preference-list (me 'loves)))
+          (define (determine-rank person person-list)
+            (cond ((eq? (car person-list) person)
+                   (set! counter (+ counter 1))
+                   (cond ((eq? person person1)
+                          (begin (set! person1-rank counter) person1-rank))
+                         (else (begin (set! person2-rank counter) person2-rank))))
+                  (else (set! counter (+ counter 1))
+                        (determine-rank person (cdr person-list)))))
+          (determine-rank person1 preference-list) ;determine person1 rank
+          (set! counter 0)
+          (determine-rank person2 preference-list))
+        (if (> person1-rank person2-rank)
+            #t
+            (display person2)))
+
+(define (couple? person1 person2)
+  (define (possible-mate? possible-mates)
+       (cond ((null? possible-mates) '())
+             ((eq? person2 (car possible-mates)) #t)
+             (else (possible-mate? (car (cdr possible-mates))))))
+  ;because if they (person1 and person 2) are already a couple they are not on the list
+  ;of possible mates?
+  (let ((possible-mates (person1 'possible)))
+     ;if possible-mate? evaluates to true, couple == #f
+     (if (possible-mate? (person1 'possible))
+         #f
+         (#t))))
+
+(define (courtship unengaged-proposers proposers proposees) 
+  (define (unengaged? unengaged-proposers proposer)
+    (if (eq? proposer (car unengaged-proposers))
+         #t
+         (unengaged? (cdr unengaged-proposers) proposer)))
+  (cond ((or (null? proposers) (null? unengaged-proposers)) '())
+         ((unengaged? unengaged-proposers (car proposers))
+          ;if the current proposer is unengaged, go through the proposees list and propose (propose according to person's preferences at all??)
+          ((car proposers) 'propose) 
+          (cond ((eq? ((car proposers) 'propose) 'we-are-engaged)
+                 (set! unengaged-proposers (cdr unengaged-proposers))) ; if successful, take proposer off list of unengaged people
+              ;if unsuccessful and the proposer is rejected by their beloved,
+              ;continue proposing/courtship
+                (else (courtship unengaged-proposers proposers proposees))))
+          ;if the current proposer is NOT on the list of unengaged-proposers & is therefore
+          ;engaged ...
+         (else (courtship unengaged-proposers (cdr proposers) proposees))))

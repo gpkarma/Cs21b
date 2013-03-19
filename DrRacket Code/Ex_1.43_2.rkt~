@@ -1,0 +1,9 @@
+#lang racket
+(define (inc x) (+ x 1))
+
+(define (square x) (* x x))
+
+(define (compose x n)
+  (if (= x (+ x n))
+      square x
+      (compose (square (inc x)) n)))

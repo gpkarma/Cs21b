@@ -1,0 +1,27 @@
+#lang racket
+
+(#%require (only racket/base random))
+
+(define (write-line x)
+  (display x)
+  (newline))
+
+(define (prompt-for-command-char prompt)
+  (display prompt)
+  (read-char))
+
+;(define (scale-list items factor)
+;  (if (null? items) 
+;      0
+;      (cons (* (car items) factor)
+;            (scale-list (cdr items) factor))))
+
+(define (map proc items)
+  (if (null? items)
+      0
+      (cons (proc (car items))
+            (map proc (cdr items)))))
+
+(define (scale-list items factor)
+  (map (lambda (x) (* x factor)) items))
+       
